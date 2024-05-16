@@ -15,12 +15,34 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Center(
-          child: Image.asset(
-            'assets/images/logo.jpg',
-            height: 200,
-            width: 200,
-          ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/logo.jpg',
+                  height: 200,
+                  width: 200,
+                ),
+                Text(
+                  'Social Squad',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 22.0,
+                  ),
+                ),
+              ],
+            ),
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          ],
         ),
       ),
     );
