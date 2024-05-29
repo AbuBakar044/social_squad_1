@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddFriendScreen extends StatefulWidget {
@@ -12,6 +11,8 @@ class AddFriendScreen extends StatefulWidget {
 
 class _AddFriendScreenState extends State<AddFriendScreen> {
   final formKey = GlobalKey<FormState>();
+  Uint8List? friendImage;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,9 +37,12 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       onTap: () {
                         showCustomBottomSheet();
                       },
-                      child: const CircleAvatar(
+                      child: CircleAvatar(
                         radius: 60.0,
                         backgroundColor: Colors.amber,
+                        backgroundImage: friendImage == null
+                            ? AssetImage('assets/images/dummy.jpg')
+                            : MemoryImage(friendImage!) as ImageProvider,
                       ),
                     ),
                     const SizedBox(
@@ -208,9 +212,10 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       Column(
                         children: [
                           IconButton(
-                            onPressed: () async {
-                              await ImagePicker()
-                                  .pickImage(source: ImageSource.camera);
+                            onPressed: () {
+                              pickImageFrom(ImageSource.camera).then((value) {
+                                Navigator.pop(context);
+                              });
                             },
                             icon: const Icon(
                               Icons.camera,
@@ -233,9 +238,10 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
                       Column(
                         children: [
                           IconButton(
-                            onPressed: () async {
-                              await ImagePicker()
-                                  .pickImage(source: ImageSource.gallery);
+                            onPressed: () {
+                              pickImageFrom(ImageSource.gallery).then((value) {
+                                Navigator.pop(context);
+                              });
                             },
                             icon: const Icon(
                               Icons.album,
@@ -260,5 +266,17 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
             ),
           );
         });
+  }
+
+  Future<void> pickImageFrom(ImageSource source) async {
+    final XFile? sourceImage = await ImagePicker().pickImage(source: source);
+
+    if (sourceImage == null) {
+      return;
+    } else {
+      friendImage = await sourceImage.readAsBytes();
+      setState(() {});
+      print('.............This is Muhammad Ali $source');
+    }
   }
 }
